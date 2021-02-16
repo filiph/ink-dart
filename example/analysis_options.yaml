@@ -1,0 +1,14 @@
+include: package:lint/analysis_options_package.yaml
+
+analyzer:
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+
+linter:
+  rules:
+    avoid_escaping_inner_quotes: false
+    lines_longer_than_80_chars: true
+    prefer_if_elements_to_conditional_expressions: false  # I like ternary more
+    prefer_final_locals: false  # Verbose
+

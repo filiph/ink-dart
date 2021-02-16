@@ -1,0 +1,28 @@
+<component name="libraryTable">
+  <library name="Dart SDK">
+    <CLASSES>
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/async" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/cli" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/collection" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/convert" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/core" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/developer" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/ffi" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/html" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/indexed_db" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/io" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/isolate" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/js" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/js_util" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/math" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/mirrors" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/svg" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/typed_data" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/web_audio" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/web_gl" />
+      <root url="file:///opt/homebrew/Cellar/dart-beta/2.12.0-259.12.beta/libexec/lib/web_sql" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
