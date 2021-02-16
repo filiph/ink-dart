@@ -175,10 +175,17 @@ p.choice a {
   text-align: center;
 }
 
+#press-space-prompt p {
+  color: #b97c2c;
+  font-family: sans-serif;
+  cursor: default;
+}
+
 .hidden {
   display: none;
 }
 
+/* The div that contains the choices. */
 #choices {
   max-width: 600px;
   margin: 0 auto;
