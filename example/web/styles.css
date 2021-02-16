@@ -80,7 +80,7 @@ h3.written-in-ink {
   margin: 0 auto;
   padding: 20px;
   padding-top: 4em;
-  padding-bottom: 0;
+  padding-bottom: 200px;
   background: white;
 }
 
@@ -146,6 +146,7 @@ img {
 }
 
 p.choice {
+  margin-bottom: 0;
   line-height: 1.7em;
 }
 
@@ -183,17 +184,6 @@ p.choice a {
 
 .hidden {
   display: none;
-}
-
-/* The div that contains the choices. */
-#choices {
-  max-width: 600px;
-  margin: 0 auto;
-  padding-left: 60px;
-  padding-right: 20px;
-  padding-bottom: 10em;
-
-  min-height: 20em;
 }
 
 .dimmed {

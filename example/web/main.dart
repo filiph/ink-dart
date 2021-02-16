@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:html';
+import 'dart:math';
 
 import 'package:async/async.dart';
 import 'package:ink_dart/ink_dart.dart';
@@ -8,13 +9,12 @@ import 'package:ink_dart/ink_dart.dart';
 
 Future<void> main() async {
   final output = querySelector('#story') as DivElement;
-  final choicesElement = querySelector('#choices') as DivElement;
   final outerScrollContainer = querySelector('.outerContainer') as DivElement;
   final pressSpacePromptElement =
       querySelector('#press-space-prompt') as DivElement;
 
-  final webGame = WebGame(window, output, choicesElement, outerScrollContainer,
-      pressSpacePromptElement);
+  final webGame =
+      WebGame(window, output, outerScrollContainer, pressSpacePromptElement);
   await webGame.play();
   webGame.close();
 }
@@ -22,13 +22,13 @@ Future<void> main() async {
 class WebGame {
   static final RegExp _sentence = RegExp(r'.+?[\.!?$]+["]?\s*');
 
+  static final _nonNumeric = RegExp('[^0-9]+');
+
   final Story story;
 
   final Window window;
 
   final DivElement output;
-
-  final DivElement choicesElement;
 
   final DivElement outerScrollContainer;
 
@@ -44,10 +44,17 @@ class WebGame {
   late final StreamQueue<void> _keyPress =
       StreamQueue(_keyPressController.stream);
 
+  bool _takingSpacePresses = true;
+
+  /// The previous span that was added. Used to dim text before the current
+  /// sentence.
+  SpanElement? _previousSentenceSpan;
+
+  int _previousBottomEdge = 0;
+
   WebGame(
     this.window,
     this.output,
-    this.choicesElement,
     this.outerScrollContainer,
     this.pressSpacePromptElement,
   ) : story = Story() {
@@ -67,6 +74,16 @@ class WebGame {
     });
   }
 
+  int get _contentBottomEdgeY {
+    if (output.children.isEmpty) return 0;
+    var bottomElement = output.children.last;
+    final result = bottomElement.offsetTop + bottomElement.offsetHeight;
+    return result;
+  }
+
+  // The Y coordinate of the bottom end of all the story content, used
+  // for growing the container, and deciding how far to scroll.
+  // (Taken from the inkjs runner.)
   void close() {
     _keyPressTapSubscription.cancel();
     _keyPressSubscription.cancel();
@@ -109,7 +126,7 @@ class WebGame {
           event.stopPropagation();
         }));
         paragraphs.add(choiceParagraph);
-        choicesElement.children.add(choiceParagraph);
+        output.children.add(choiceParagraph);
       }
       _updateOutputHeight();
 
@@ -129,73 +146,6 @@ class WebGame {
     }
   }
 
-  bool _takingSpacePresses = true;
-
-  /// Extend height to fit
-  /// We do this manually so that removing elements and creating new ones
-  /// doesn't cause the height (and therefore scroll) to jump backwards
-  /// temporarily.
-  /// (Taken from the inkjs runner.)
-  void _updateOutputHeight() {
-    output.style.height = '${_contentBottomEdgeY}px';
-  }
-
-  // The Y coordinate of the bottom end of all the story content, used
-  // for growing the container, and deciding how far to scroll.
-  // (Taken from the inkjs runner.)
-  int get _contentBottomEdgeY {
-    if (output.children.isEmpty) return 0;
-    var bottomElement = output.children.last;
-    final result = bottomElement.offsetTop + bottomElement.offsetHeight;
-    return result;
-  }
-
-  void _showPressSpacePrompt(bool value) {
-    if (value) {
-      pressSpacePromptElement.classes.remove('hidden');
-    } else {
-      pressSpacePromptElement.classes.add('hidden');
-    }
-    _takingSpacePresses = value;
-  }
-
-  /// The previous span that was added. Used to dim text before the current
-  /// sentence.
-  SpanElement? _previousSentenceSpan;
-
-  Future<void> _showParagraph(String text) async {
-    assert(!text.contains('<'), 'Not ready for HTML in text: "$text"');
-
-    final paragraph = ParagraphElement();
-    output.children.add(paragraph);
-
-    final sentences = _sentence.allMatches(text);
-
-    var first = true;
-    for (final sentence in sentences) {
-      if (!first) {
-        await _keyPress.next;
-      }
-      final span = SpanElement()..text = sentence.group(0);
-      // Start hidden.
-      span.classes.add('hide');
-      paragraph.children.add(span);
-      first = false;
-
-      if (_previousSentenceSpan != null) {
-        _previousSentenceSpan!.classes.add('dimmed');
-      }
-      _previousSentenceSpan = span;
-      await window.animationFrame;
-      span.classes.remove('hide');
-    }
-  }
-
-  int _previousBottomEdge = 0;
-
-  // Scrolls the page down, but no further than the bottom edge of what
-  // you could see previously, so it doesn't go too far.
-  // (Taken from the inkjs runner.)
   Future<void> _scrollDown(int previousBottomEdge) async {
     // Line up top of screen with the bottom of where the previous content ended
     var target = previousBottomEdge;
@@ -225,5 +175,61 @@ class WebGame {
 
     window.requestAnimationFrame(step);
     await completer.future;
+  }
+
+  Future<void> _showParagraph(String text) async {
+    assert(!text.contains('<'), 'Not ready for HTML in text: "$text"');
+
+    final paragraph = ParagraphElement();
+    output.children.add(paragraph);
+
+    final sentences = _sentence.allMatches(text);
+
+    var first = true;
+    for (final sentence in sentences) {
+      if (!first) {
+        await _keyPress.next;
+      }
+      final span = SpanElement()..text = sentence.group(0);
+      // Start hidden.
+      span.classes.add('hide');
+      paragraph.children.add(span);
+      first = false;
+
+      if (_previousSentenceSpan != null) {
+        _previousSentenceSpan!.classes.add('dimmed');
+      }
+      _previousSentenceSpan = span;
+      await window.animationFrame;
+
+      _updateOutputHeight();
+      _scrollDown(_previousBottomEdge);
+
+      span.classes.remove('hide');
+    }
+  }
+
+  void _showPressSpacePrompt(bool value) {
+    if (value) {
+      pressSpacePromptElement.classes.remove('hidden');
+    } else {
+      pressSpacePromptElement.classes.add('hidden');
+    }
+    _takingSpacePresses = value;
+  }
+
+  // Scrolls the page down, but no further than the bottom edge of what
+  // you could see previously, so it doesn't go too far.
+  // (Taken from the inkjs runner.)
+  /// Extend height to fit
+  /// We do this manually so that removing elements and creating new ones
+  /// doesn't cause the height (and therefore scroll) to jump backwards
+  /// temporarily.
+  /// (Taken from the inkjs runner.)
+  void _updateOutputHeight() {
+    // Never decrease the size, to prevent jumping up.
+    final previousStr = output.style.height.split(_nonNumeric).first;
+    final previous = num.tryParse(previousStr) ?? 0;
+    output.style.height = '${max(previous, _contentBottomEdgeY)}px';
   }
 }
