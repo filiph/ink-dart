@@ -79,6 +79,9 @@ class WebGame {
     while (true) {
       // Print out all paragraphs.
       while (story.canContinue) {
+        _updateOutputHeight();
+        await _scrollDown(_previousBottomEdge);
+
         _previousBottomEdge = _contentBottomEdgeY;
 
         final paragraphText = story.continueStory();
@@ -86,9 +89,6 @@ class WebGame {
         await _showParagraph(paragraphText);
 
         await _keyPress.next;
-
-        _updateOutputHeight();
-        await _scrollDown(_previousBottomEdge);
       }
       _showPressSpacePrompt(false);
 
