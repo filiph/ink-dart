@@ -80,7 +80,7 @@ h3.written-in-ink {
   margin: 0 auto;
   padding: 20px;
   padding-top: 4em;
-  padding-bottom: 0;
+  padding-bottom: 200px;
   background: white;
 }
 
@@ -146,6 +146,7 @@ img {
 }
 
 p.choice {
+  margin-bottom: 0;
   line-height: 1.7em;
 }
 
@@ -175,18 +176,14 @@ p.choice a {
   text-align: center;
 }
 
-.hidden {
-  display: none;
+#press-space-prompt p {
+  color: #b97c2c;
+  font-family: sans-serif;
+  cursor: default;
 }
 
-#choices {
-  max-width: 600px;
-  margin: 0 auto;
-  padding-left: 60px;
-  padding-right: 20px;
-  padding-bottom: 10em;
-
-  min-height: 20em;
+.hidden {
+  display: none;
 }
 
 .dimmed {
