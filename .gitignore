@@ -11,3 +11,9 @@ build/
 
 # Directory created by dartdoc
 doc/api/
+
+# OS
+.DS_Store
+
+#IDE
+**/.idea/vcs.xml
