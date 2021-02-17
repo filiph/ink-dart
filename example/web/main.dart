@@ -111,21 +111,33 @@ class WebGame {
 
       assert(story.currentChoices.isNotEmpty);
       final choiceTaken = Completer<int>();
-      final paragraphs = <ParagraphElement>[];
+      final elements = <ParagraphElement>[];
       final subscriptions = <StreamSubscription>[];
 
       for (final choice in story.currentChoices) {
         final choiceParagraph = ParagraphElement()
+          ..children
+              .add(Element.tag('code')..text = _indexToLetter(choice.index))
+          ..children.add(Element.span()..text = '  ')
           ..children.add(Element.a()
             ..text = choice.text
             ..attributes['href'] = '#')
           ..classes.add('choice');
+
         subscriptions.add(choiceParagraph.onClick.listen((event) {
           choiceTaken.complete(choice.index);
           event.preventDefault();
           event.stopPropagation();
         }));
-        paragraphs.add(choiceParagraph);
+        subscriptions.add(window.onKeyPress.listen((event) {
+          if (_charCodeSatisfiesIndex(event.charCode, choice.index)) {
+            choiceTaken.complete(choice.index);
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }));
+
+        elements.add(choiceParagraph);
         output.children.add(choiceParagraph);
       }
       _updateOutputHeight();
@@ -136,7 +148,7 @@ class WebGame {
       for (final subscription in subscriptions) {
         subscription.cancel();
       }
-      for (final paragraph in paragraphs) {
+      for (final paragraph in elements) {
         paragraph.remove();
       }
       story.chooseIndex(index);
@@ -231,5 +243,19 @@ class WebGame {
     final previousStr = output.style.height.split(_nonNumeric).first;
     final previous = num.tryParse(previousStr) ?? 0;
     output.style.height = '${max(previous, _contentBottomEdgeY)}px';
+  }
+
+  /// For example, the charcode for `a` and for `A` both satisfy index `0`
+  /// (the first choice).
+  bool _charCodeSatisfiesIndex(int charCode, int index) {
+    final upper = _indexToLetter(index);
+    if (charCode == upper.codeUnits.single) return true;
+    final lower = upper.toLowerCase();
+    if (charCode == lower.codeUnits.single) return true;
+    return false;
+  }
+
+  String _indexToLetter(int index) {
+    return String.fromCharCode('A'.codeUnits.single + index);
   }
 }

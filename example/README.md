@@ -1,4 +1,5 @@
-An absolute bare-bones web app.
+## To publish.
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+1. Go to this directory (`cd example`).
+2. `peanut`
+3. `git push origin --set-upstream gh-pages`
