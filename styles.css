@@ -95,9 +95,11 @@ p {
 }
 
 a {
-  font-weight: 700;
   color: #b97c2c;
-  font-family: sans-serif;
+
+  font-family: "Oxanium", sans-serif;
+  font-weight: 400;
+
   transition: color 0.6s;
   text-decoration: none;
 }
@@ -178,7 +180,7 @@ p.choice a {
 
 #press-space-prompt p {
   color: #b97c2c;
-  font-family: sans-serif;
+  font-family: 'Oxanium', sans-serif;
   cursor: default;
 }
 
@@ -188,4 +190,13 @@ p.choice a {
 
 .dimmed {
   opacity: 30%;
+}
+
+code {
+  font-family: 'Oxanium', monospace;
+  font-weight: 800;
+
+  padding: 2px 6px;
+  border: 1px solid gray;
+  border-radius: 4px;
 }
